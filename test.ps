@@ -7,10 +7,14 @@
 %%DocumentFonts: atend
 %%EndComments
 
-/xOff 72 def
-/yOff 72 def
+/XOff 72 def
+/YOff 72 def
 /scale    { 10 mul } def
-/trackHeight 0.5 def
+/TrackHeight 0.5 def
+/ResistorLength 3 def
+/ResistorWidth 0.8 def
+/WireWidth 1.5 def
+
 /font { findfont exch scalefont setfont } def
 /circle {  0 360 arc }  def
 
@@ -22,12 +26,19 @@
 %newpath
 %72 0 translate
 %0 scale trackPos scale moveto
-%0 trackHeight 2 div scale rmoveto
+%0 TrackHeight 2 div scale rmoveto
 %width scale 0 rlineto
-%0 trackHeight scale rlineto
+%0 TrackHeight scale rlineto
 %width -1 mul scale 0 rlineto
 %closepath
 %stroke
+
+/hole {
+    /thisHoleNum exch 1 sub def
+    /thisTrackNum exch 1 sub def
+    thisHoleNum TrackHeight add scale
+    thisTrackNum TrackHeight add scale
+} def
 
 % called as:   trackNum nHoles drawTrack
 /drawTrack {
@@ -35,24 +46,23 @@
     /trackPos exch def
     gsave
     newpath
-    xOff yOff translate
+    XOff YOff translate
     0 scale trackPos scale moveto
-    0 trackHeight 2 div scale rmoveto
+    0 TrackHeight 2 div scale rmoveto
     trackWidth scale 0 rlineto
-    0 trackHeight scale rlineto
+    0 TrackHeight scale rlineto
     trackWidth -1 mul scale 0 rlineto
     closepath
     stroke
     0 1 trackWidth 1 sub {
-        trackHeight add scale
-        trackPos trackHeight add scale 0.7 circle fill stroke
+        TrackHeight add scale
+        trackPos TrackHeight add scale 0.7 circle fill stroke
     } for
     grestore
 } def
 
 % called as: nTracks nHoles drawBoard
-/drawBoard
-{
+/drawBoard {
     /nHoles  exch def
     /nTracks exch def
     0 1 nTracks {
@@ -60,10 +70,96 @@
     } for
 } def
 
+% Usage: track hole breakTrack
+/breakTrack {
+    /holeNum  exch 1 sub def
+    /trackNum exch 1 sub def
+    gsave
+    newpath
+    XOff YOff translate
+    1 0 0 setrgbcolor
+    holeNum TrackHeight add scale trackNum TrackHeight add scale TrackHeight 0.2 sub scale circle fill stroke
+    0 0 0 setrgbcolor
+    holeNum TrackHeight add scale trackNum TrackHeight add scale TrackHeight 0.2 sub scale circle stroke
+    grestore
+} def
+
+% Usage: track1 hole1 track2 hole2 wire
+/wire {
+    /holeNum2 exch def
+    /trackNum2 exch def
+    /holeNum1 exch def
+    /trackNum1 exch def
+    gsave
+    newpath
+    XOff YOff translate
+    WireWidth setlinewidth
+    trackNum1 holeNum1 hole 2.0 circle fill
+    trackNum2 holeNum2 hole 2.0 circle fill
+    trackNum1 holeNum1 hole moveto
+    trackNum2 holeNum2 hole lineto
+    stroke
+    grestore
+} def
+
+% track1 track2 hole resistorV
+/resistorV {
+    /holeNum exch def
+    /trackNum2 exch def
+    /trackNum1 exch def
+
+    trackNum1 holeNum trackNum2 holeNum wire
+    
+    gsave
+    XOff YOff translate
+    WireWidth setlinewidth
+
+    /midTrack trackNum1 trackNum2 add 2 div def
+    1.0 setlinewidth
+
+    1 1 1 setrgbcolor
+    newpath
+    midTrack holeNum hole moveto
+    ResistorWidth -1 mul 2 div scale ResistorLength -1 mul 2 div scale rmoveto
+    ResistorWidth scale 0 rlineto
+    0 ResistorLength scale rlineto
+    ResistorWidth -1 mul scale 0 rlineto
+    closepath fill stroke
+    
+    0 0 0 setrgbcolor
+    newpath
+    midTrack holeNum hole moveto
+    ResistorWidth -1 mul 2 div scale ResistorLength -1 mul 2 div scale rmoveto
+    ResistorWidth scale 0 rlineto
+    0 ResistorLength scale rlineto
+    ResistorWidth -1 mul scale 0 rlineto
+    closepath stroke
+    
+    grestore
+} def
+
+% Usage: track1 track2 hole resistorU
+/resistorU {
+    /holeNum exch def
+    /trackNum2 exch def
+    /trackNum1 exch def
+    trackNum1 holeNum trackNum2 holeNum wire
+    gsave
+    WireWidth setlinewidth
+    XOff YOff translate
+    newpath
+    trackNum1 holeNum hole 0.5 scale circle stroke
+    grestore
+} def
+
 %0 20 drawTrack
 %1 20 drawTrack
 
 10 30 drawBoard
+5 5 breakTrack
+5 4 7 4 wire
+3 8 7 resistorV
+3 4 9 resistorU
 
 showpage
 
