@@ -1,0 +1,70 @@
+%!PS-Adobe-2.0
+%%Creator: (vero)
+%%For: (Vero)
+%%Title: (Vero)
+%%CreationDate: 26 Apr 2017
+%%Pages: 1
+%%DocumentFonts: atend
+%%EndComments
+
+/xOff 72 def
+/yOff 72 def
+/scale    { 10 mul } def
+/trackHeight 0.5 def
+/font { findfont exch scalefont setfont } def
+/circle {  0 360 arc }  def
+
+%%EndProlog
+%%Page 1 1
+
+0.1 setlinewidth
+
+%newpath
+%72 0 translate
+%0 scale trackPos scale moveto
+%0 trackHeight 2 div scale rmoveto
+%width scale 0 rlineto
+%0 trackHeight scale rlineto
+%width -1 mul scale 0 rlineto
+%closepath
+%stroke
+
+% called as:   trackNum nHoles drawTrack
+/drawTrack {
+    /trackWidth exch def
+    /trackPos exch def
+    gsave
+    newpath
+    xOff yOff translate
+    0 scale trackPos scale moveto
+    0 trackHeight 2 div scale rmoveto
+    trackWidth scale 0 rlineto
+    0 trackHeight scale rlineto
+    trackWidth -1 mul scale 0 rlineto
+    closepath
+    stroke
+    0 1 trackWidth 1 sub {
+        trackHeight add scale
+        trackPos trackHeight add scale 0.7 circle fill stroke
+    } for
+    grestore
+} def
+
+% called as: nTracks nHoles drawBoard
+/drawBoard
+{
+    /nHoles  exch def
+    /nTracks exch def
+    0 1 nTracks {
+        nHoles drawTrack
+    } for
+} def
+
+%0 20 drawTrack
+%1 20 drawTrack
+
+10 30 drawBoard
+
+showpage
+
+
