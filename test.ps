@@ -13,6 +13,8 @@
 /TrackHeight 0.5 def
 /ResistorLength 3 def
 /ResistorWidth 0.8 def
+/CapacitorLength 2 def
+/CapacitorWidth 0.5 def
 /WireWidth 1.5 def
 
 /font { findfont exch scalefont setfont } def
@@ -84,6 +86,13 @@
     grestore
 } def
 
+% Usage: track hole
+/_markHole {
+    /holeNum exch def
+    /trackNum exch def
+    trackNum holeNum hole 2.0 circle fill
+} def
+
 % Usage: track1 hole1 track2 hole2 wire
 /wire {
     /holeNum2 exch def
@@ -94,8 +103,8 @@
     newpath
     XOff YOff translate
     WireWidth setlinewidth
-    trackNum1 holeNum1 hole 2.0 circle fill
-    trackNum2 holeNum2 hole 2.0 circle fill
+    trackNum1 holeNum1 _markHole
+    trackNum2 holeNum2 _markHole
     trackNum1 holeNum1 hole moveto
     trackNum2 holeNum2 hole lineto
     stroke
@@ -152,6 +161,81 @@
     grestore
 } def
 
+% track1 track2 hole resistorV
+/capacitorV {
+    /holeNum exch def
+    /trackNum2 exch def
+    /trackNum1 exch def
+
+    trackNum1 holeNum trackNum2 holeNum wire
+    
+    gsave
+    XOff YOff translate
+    WireWidth setlinewidth
+
+    /midTrack trackNum1 trackNum2 add 2 div def
+    1.0 setlinewidth
+
+    1 1 1 setrgbcolor
+    newpath
+    midTrack holeNum hole moveto
+
+    CapacitorWidth -1 mul 2 div scale  CapacitorLength -1 mul 2 div scale rmoveto
+
+    0 CapacitorLength scale rlineto
+
+    CapacitorWidth 3 div scale       CapacitorLength 6 div scale
+    CapacitorWidth 3 div 2 mul scale CapacitorLength 6 div scale
+    CapacitorWidth scale             0 rcurveto
+
+    0 CapacitorLength -1 mul scale rlineto
+
+    CapacitorWidth -3 div scale       CapacitorLength -6 div scale
+    CapacitorWidth -3 div 2 mul scale CapacitorLength -6 div scale
+    CapacitorWidth -1 mul scale       0 rcurveto
+
+    closepath
+    fill stroke
+    
+    0 0 0 setrgbcolor
+    newpath
+    midTrack holeNum hole moveto
+
+    CapacitorWidth -1 mul 2 div scale  CapacitorLength -1 mul 2 div scale rmoveto
+
+    0 CapacitorLength scale rlineto
+
+    CapacitorWidth 3 div scale       CapacitorLength 6 div scale
+    CapacitorWidth 3 div 2 mul scale CapacitorLength 6 div scale
+    CapacitorWidth scale             0 rcurveto
+
+    0 CapacitorLength -1 mul scale rlineto
+
+    CapacitorWidth -3 div scale       CapacitorLength -6 div scale
+    CapacitorWidth -3 div 2 mul scale CapacitorLength -6 div scale
+    CapacitorWidth -1 mul scale       0 rcurveto
+
+    closepath
+    stroke
+
+    trackNum1 holeNum _markHole
+    trackNum2 holeNum _markHole
+    
+    grestore
+} def
+
+
+/setCapacitorTiny {
+    /CapacitorLength 1 def
+    /CapacitorWidth  0.5 def
+} def
+
+/setCapacitorMedium {
+    /CapacitorLength 2 def
+    /CapacitorWidth  0.5 def
+} def
+
+
 %0 20 drawTrack
 %1 20 drawTrack
 
@@ -160,6 +244,14 @@
 5 4 7 4 wire
 3 8 7 resistorV
 3 4 9 resistorU
+
+setCapacitorTiny
+1 2 1 capacitorV
+
+setCapacitorMedium
+3 5 1 capacitorV
+
+6 11 1 capacitorV
 
 showpage
 
