@@ -235,6 +235,11 @@
     /CapacitorWidth  0.5 def
 } def
 
+/setCapacitorSize {
+    /CapacitorWidth exch def
+    /CapacitorLength exch def
+} def
+
 
 %0 20 drawTrack
 %1 20 drawTrack
@@ -251,6 +256,7 @@ setCapacitorTiny
 setCapacitorMedium
 3 5 1 capacitorV
 
+2 0.5 setCapacitorSize
 6 11 1 capacitorV
 
 showpage
